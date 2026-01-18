@@ -1,15 +1,15 @@
 import os
-
-import google.generativeai as genai
+from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def gerar_embedding(texto: str) -> list[float]:
-    response = genai.embed_content(
-        model="text-embedding-004",
-        content=texto,
-        task_type="retrieval_document"
+    response = client.embeddings.create(
+        model="text-embedding-3-small",
+        input=texto,
+        encoding_format="float"
     )
-    return response["embedding"]
+    return response.data[0].embedding

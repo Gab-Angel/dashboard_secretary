@@ -74,7 +74,7 @@ st.markdown("Selecione uma das opções abaixo para acessar as funcionalidades d
 st.markdown("---")
 
 # Cards de navegação
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("""
@@ -91,16 +91,30 @@ with col1:
 with col2:
     st.markdown("""
     <div class="nav-card">
-        <div class="nav-icon">🔤</div>
+        <div class="nav-icon">💰</div>
+        <div class="nav-title">Tokens & Custos</div>
+        <div class="nav-description">Monitore o consumo de tokens e gastos com a API</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("Acessar Tokens", key="tokens", use_container_width=True):
+        st.switch_page("pages/dashboard_tokens.py")
+
+col3, col4 = st.columns(2)
+
+with col3:
+    st.markdown("""
+    <div class="nav-card">
+        <div class="nav-icon">🧠</div>
         <div class="nav-title">Gestão de Embeddings</div>
-        <div class="nav-description">Insira, gerencie e visualize embeddings do sistema</div>
+        <div class="nav-description">Insira, gerencie e visualize embeddings do sistema RAG</div>
     </div>
     """, unsafe_allow_html=True)
     
     if st.button("Acessar Embeddings", key="embeddings", use_container_width=True):
         st.switch_page("pages/dashboard_embeddings.py")
 
-with col3:
+with col4:
     st.markdown("""
     <div class="nav-card">
         <div class="nav-icon">⚙️</div>
@@ -119,12 +133,11 @@ st.markdown("### 📈 Visão Geral Rápida")
 
 col1, col2, col3, col4 = st.columns(4)
 
-# Aqui você pode adicionar métricas gerais rápidas se desejar
 with col1:
     st.metric(label="Status do Sistema", value="🟢 Online")
 
 with col2:
-    st.metric(label="Páginas Disponíveis", value="2")
+    st.metric(label="Páginas Disponíveis", value="3")
 
 with col3:
     st.metric(label="Última Atualização", value="Hoje")

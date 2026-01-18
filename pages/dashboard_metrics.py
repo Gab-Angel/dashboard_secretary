@@ -67,6 +67,10 @@ def get_general_stats():
     cursor.execute("SELECT COUNT(*) as total FROM users")
     stats['total_users'] = cursor.fetchone()['total']
     
+    # Total de agendamentos
+    cursor.execute("SELECT COUNT(*) as total FROM calendar_events")
+    stats['total_events'] = cursor.fetchone()['total']
+    
     # Mensagens nas últimas 24h
     cursor.execute("""
         SELECT COUNT(*) as total 
@@ -82,6 +86,14 @@ def get_general_stats():
         WHERE created_at >= NOW() - INTERVAL '24 hours'
     """)
     stats['active_sessions_24h'] = cursor.fetchone()['total']
+    
+    # Agendamentos nas últimas 24h
+    cursor.execute("""
+        SELECT COUNT(*) as total 
+        FROM calendar_events 
+        WHERE created_at >= NOW() - INTERVAL '24 hours'
+    """)
+    stats['events_24h'] = cursor.fetchone()['total']
     
     # Média de mensagens por sessão
     cursor.execute("""
@@ -154,11 +166,11 @@ def get_recent_conversations(limit=20):
     cursor.execute("""
         SELECT 
             c.session_id,
-            u.nome,
+            u.nome_completo,
             c.message,
             c.created_at
         FROM chat_ia c
-        LEFT JOIN users u ON c.session_id = u.numero
+        LEFT JOIN users u ON c.session_id = u.phone_number
         ORDER BY c.created_at DESC
         LIMIT %s
     """, (limit,))
@@ -250,7 +262,7 @@ with st.sidebar:
 try:
     stats = get_general_stats()
     
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
     
     with col1:
         st.metric(
@@ -273,6 +285,13 @@ try:
         )
     
     with col4:
+        st.metric(
+            label="📅 Agendamentos",
+            value=f"{stats['total_events']:,}",
+            delta=f"{stats['events_24h']} (24h)"
+        )
+    
+    with col5:
         st.metric(
             label="📊 Média Msg/Conversa",
             value=f"{stats['avg_messages_per_session']:.1f}"
